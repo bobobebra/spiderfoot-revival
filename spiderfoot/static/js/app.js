@@ -92,7 +92,7 @@ window.scanForm = (initialModules, presets) => ({
       const v = (value || '').trim();
       if (!v) return '';
 
-      // ASN  — AS12345 or ASN12345
+      // ASN — AS12345 or ASN12345
       if (/^AS[N]?\d+$/i.test(v)) return 'ASN';
 
       // Email
@@ -113,6 +113,13 @@ window.scanForm = (initialModules, presets) => ({
       // Domain — has at least one dot, no spaces, no @ symbol
       if (/^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)+$/.test(v)) return 'Domain';
 
+      // Bitcoin — legacy Base58 or Bech32
+      if (/^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(v)) return 'Bitcoin';
+      if (/^bc1[a-z0-9]{25,87}$/i.test(v)) return 'Bitcoin';
+
+      // Username — single token without spaces or @
+      if (/^[A-Za-z0-9._-]{2,64}$/.test(v) && !v.includes('@')) return 'Username';
+
       // Fallback — treat multi-word values as a name
       if (/\s/.test(v) && !/[@\/]/.test(v)) return 'Name';
 
@@ -126,9 +133,11 @@ window.scanForm = (initialModules, presets) => ({
         'IP Address': 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
         'Subnet':     'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300',
         'ASN':        'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
-        'Email':      'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
+        'Email':       'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
         'Phone':      'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300',
         'Name':       'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300',
+        'Bitcoin':    'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+        'Username':   'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
       };
       return colours[this.targetType] || 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300';
     },
